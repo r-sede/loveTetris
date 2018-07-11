@@ -169,7 +169,6 @@ local function getRandomPiece()
         return i()
     elseif(n==3) then
         return s()
-        
     elseif(n==4) then
         return z()
     elseif(n==5) then
@@ -200,7 +199,7 @@ function piece.rot(this,clockwise,board)
         tempIndex = table.getn(this.grid)
     end
 
-    if (this.isCollide(this, board, this.x, this.rotIndex)) then
+    if (this:isCollide(board, this.x, tempIndex)) then
         return
     end
 
@@ -210,11 +209,49 @@ end
 function piece.trans(this,left,board)
     local tempX = left and this.x -1 or this.x + 1;
     --colision
-    if (this.isCollide(this, board, tempX, this.rotIndex)) then
+    if (this:isCollide(board, tempX, this.rotIndex)) then
         return
     end
     this.x= tempX;
+end
 
+function piece.fall(this,board)
+    local tempY = this.y + 1;
+
+    if(this:isOnContact(board, tempY))then
+        return
+    end
+    this.y = tempY;
+end
+
+function piece.isCollide(this,board,tempX,rotIndex)
+    for i = 0,3 do
+        for j = 0,3 do 
+            if (this.grid[rotIndex][j+1][i+1] == 1) then
+                if(board[j+1+this.y][i+1+tempX] == 1 or board[j+1+this.y][i+1+tempX] == nil) then
+                    return true
+                end
+                --print(board[j+1+this.y][i+1+tempX])
+            end
+        end
+    end
+    return false;
+end
+
+function piece.isOnContact(this,board,tempY)
+    for i = 0,3 do
+        for j = 0,3 do 
+            if (this.grid[this.rotIndex][j+1][i+1] == 1) then
+                if (j+1+tempY > table.getn(board))then
+                    return true
+                end
+                if(board[j+1+tempY][i+1+this.x] == 1 ) then
+                    return true
+                end
+            end
+        end
+    end
+    return false;
 end
 
 function piece.draw(this)
@@ -233,18 +270,6 @@ function piece.draw(this)
     love.graphics.print('x: '..this.x..' ; y: '..this.y .. ' ; rot: '..this.rotIndex,
         10,10
     )
-end
-function piece.isCollide(this,tetGrid,tempX,rotIndex)
-    for i = 0,3 do
-        for j = 0,3 do 
-            if (this.grid[rotIndex][j+1][i+1] == 1) then
-                if(tetGrid[j+1+this.y][i+1+tempX] == 1) then
-                    return true
-                end
-            end
-        end
-    end
-    return false;
 end
 
 return piece
