@@ -16,15 +16,15 @@ function love.load()
     
     love.window.setMode(WW, WH);
     currentPiece:new(ppm,blockSize)
-    print(currentPiece.grid)
+    --print(currentPiece.grid)
 end
 
 function love.update(dt)
     local now= love.timer.getTime();
     if(now - lastTick >= 1) then
         lastTick = now;
-        currentPiece.y = currentPiece.y + currentPiece.s;
-        print('tick')
+        currentPiece.y = currentPiece.y + 1;
+        -- print('tick')
     end
     
 end
@@ -35,3 +35,16 @@ function love.draw()
     --love.graphics.rectangle('fill', testPiece.x,testPiece.y,testPiece.s,testPiece.s);
 end
 
+function love.keypressed(key)
+    if(key=='space') then
+        reset()
+    end
+    if(key=='escape') then
+        love.event.quit()
+    end
+end
+
+
+function reset()
+    currentPiece:new(ppm,blockSize)
+end

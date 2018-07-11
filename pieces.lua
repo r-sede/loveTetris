@@ -3,28 +3,32 @@ local piece = {};
 
 function piece.new(this, blocksize, ppm)
     this.grid = {
-        {0,1,0},
-        {0,1,1},
-        {0,1,0},
+        {1,1,1,1},
+        {1,1,1,1},
+        {1,1,1,1},
+        {1,1,1,1},
     }
-    this.x = 4;
+    this.x = 0;
     this.y = 0;
     this.s = blocksize * ppm;
 end
 
 function piece.draw(this)
-    for i = 0,2 do
-        for j = 0,2 do 
-            if (this.grid[i+1][j+1] == 1) then
+    for i = 0,3 do
+        for j = 0,3 do 
+            if (this.grid[j+1][i+1] == 1) then
                 love.graphics.rectangle('line',
-                    this.x + (j * this.s),
-                    this.y + (i * this.s),
+                    (this.x*this.s) + (i * this.s),
+                    ((this.y-2)*this.s) + (j * this.s),
                     this.s,
                     this.s
                 )
             end
         end
     end
+    love.graphics.print('x: '..this.x..' ; y: '..this.y,
+        10,10
+    )
 
 end
 
