@@ -14,8 +14,30 @@ function love.load()
     }
 
     for i=1,tetGrid.h do
-        table.insert(tetGrid.board, {0,0,0,0,0,0,0,0,0,0});
+        table.insert(tetGrid.board, {0,0,0,0,1,0,0,0,0,0});
     end
+    tetGrid.board = {
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,1,1,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,1,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,0,0,0,0,0,0,0,0,1},
+        {1,1,1,1,1,1,1,1,1,1},
+    }
 
     WW = tetGrid.w * blockSize * ppm;
     WH = (tetGrid.h ) * blockSize * ppm;
@@ -30,6 +52,7 @@ function love.update(dt)
     if(now - lastTick >= 1) then
         lastTick = now;
         currentPiece.y = currentPiece.y + 1;
+
         -- print('tick')
     end
     
@@ -37,41 +60,46 @@ end
 
 
 function love.draw()
-    drawGrid(true)
     drawGrid()
     currentPiece:draw()
     --love.graphics.rectangle('fill', testPiece.x,testPiece.y,testPiece.s,testPiece.s);
 end
 
-function drawGrid(empty)
+function drawGrid()
     --print(empty)
     for i = 0,tetGrid.w-1 do
         for j = 0,tetGrid.h-1 do 
-            if (tetGrid.board[j+1][i+1] == 1 or empty) then
-                love.graphics.rectangle('line',
-                    (i*ppm * blockSize),
-                    (j*ppm * blockSize),
-                    ppm * blockSize,
-                    ppm * blockSize
-                )
+            local mode;
+            if (tetGrid.board[j+1][i+1] == 1) then
+                mode = 'fill'
+            else
+                mode='line'
             end
+            love.graphics.rectangle(mode,
+                (i*ppm * blockSize),
+                (j*ppm * blockSize),
+                ppm * blockSize,
+                ppm * blockSize
+            )
         end
     end
 end
 
 
+
+
 function love.keypressed(key)
     if(key=='x') then
-        currentPiece:rot(true)
+        currentPiece:rot(true,tetGrid.board)
     end
     if(key=='s') then
-        currentPiece:rot(false)
+        currentPiece:rot(false,tetGrid.board)
     end
     if(key=='left') then
-        currentPiece:trans(true)
+        currentPiece:trans(true,tetGrid.board)
     end
     if(key=='right') then
-        currentPiece:trans(false)
+        currentPiece:trans(false,tetGrid.board)
     end
     if(key=='space') then
         reset()
