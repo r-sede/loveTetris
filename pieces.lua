@@ -203,7 +203,7 @@ function piece.rot(this,clockwise,board)
     if (this:isCollide(board, this.x, tempIndex)) then
         return
     end
-
+    blockRotate:play()
     this.rotIndex = tempIndex
 end
 
@@ -213,6 +213,7 @@ function piece.trans(this,left,board)
     if (this:isCollide(board, tempX, this.rotIndex)) then
         return
     end
+    blockMove:play()
     this.x= tempX
 end
 
@@ -251,6 +252,7 @@ function piece.isCollide(this,board,tempX,rotIndex)
 end
 
 function piece.isOnContact(this,board,tempY)
+    if(this.y <= -1) then return false end
     for i = 0,3 do
         for j = 0,3 do 
             if (this.grid[this.rotIndex][j+1][i+1] == 1) then
