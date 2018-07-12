@@ -1,6 +1,3 @@
-
-
-
 local function o()
     local grids = {
         {
@@ -12,8 +9,6 @@ local function o()
     }
     return grids
 end
-
-
 
 local function i()
 
@@ -130,7 +125,6 @@ local function j()
     return grids
 end
 
-
 local function t()
     local grids = {
         {
@@ -192,8 +186,8 @@ end
 function piece.new(this, blocksize, ppm)
     this.rotIndex=1
     this.grid = getRandomPiece()
-    this.x = 0
-    this.y = 0
+    this.x = 2
+    this.y = -1
     this.s = blocksize * ppm
 end
 
@@ -234,10 +228,11 @@ function piece.fall(this,board)
 end
 
 function piece.isCollide(this,board,tempX,rotIndex)
+    if(this.y <= -1) then return false end
     for i = 0,3 do
         for j = 0,3 do 
             if (this.grid[rotIndex][j+1][i+1] == 1) then
-                if(j+1+this.y > table.getn(board) or board[j+1+this.y][i+1+tempX] == 1 or board[j+1+this.y][i+1+tempX] == nil) then
+                if(j+1+this.y > table.getn(board) or  board[j+1+this.y][i+1+tempX] == 1 or board[j+1+this.y][i+1+tempX] == nil) then
                     return true
                 end
                 --print(board[j+1+this.y][i+1+tempX])

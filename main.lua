@@ -1,11 +1,15 @@
 local tetGrid, ppm, blockSize,WW,WH
-local lastTick = love.timer.getTime()
+
 local pieces = require'pieces'
 local currentPiece = pieces-- = {x=0y=0s=blockSize * ppm}
 local shader;
+local score=0;
+local earnedLevel=11;
+local countDown = 0.55;
+local debugTime = 0.55;
 
 function love.load()
-    love.graphics.setDefaultFilter('nearest', 'nearest')
+    love.graphics.setDefaultFilter('nearest');
     currentPiece.loadSprite('assets/img/tetrisBlock.png')
     blockSize = 8
     ppm = 4
@@ -44,31 +48,31 @@ function love.load()
     WW = tetGrid.w * blockSize * ppm
     WH = (tetGrid.h ) * blockSize * ppm
     
-    love.window.setMode(WW, WH)
+    love.window.setMode(WW+300, WH)
     currentPiece:new(ppm,blockSize)
-    --print(currentPiece.grid)
 end
 
 function love.update(dt)    
     local now= love.timer.getTime()
-    if(now - lastTick >= 1 *0.3) then
-        lastTick = now
+    countDown = countDown-dt;
+    if(countDown<=0) then
         local fallRes = currentPiece:fall(tetGrid.board)
         if(fallRes == false) then
             copyToBoard()
+            currentPiece:new(ppm,blockSize)
             local completedLine,lineToDelete = checkLine()
-            print('completedLine: '..completedLine)
-            --print('lineToDelete: '..lineToDelete)
             if(completedLine>0) then
                 removeLine(lineToDelete);
-                --addPoints(completedLine);
+                addPoints(completedLine);
             end
         end
-                --copy to board
-        --check line
+        -- copy to board
+        -- call new 
+        -- check line
         -- add points ...
-        -- set call new 
         -- print('tick')
+        countDown = (0.05*(11-earnedLevel))
+        debugTime = countDown;
     end
     
 end
@@ -77,11 +81,13 @@ end
 function love.draw()
     drawGrid()
     currentPiece:draw()
-    --love.graphics.rectangle('fill', testPiece.x,testPiece.y,testPiece.s,testPiece.s)
+    love.graphics.print('score :'..score, 400, 10)
+    love.graphics.print('level :'..earnedLevel, 400, 25)
+    love.graphics.print('countDown :'..debugTime, 400, 40)
+    
 end
 
 function drawGrid()
-    --print(empty)
     for i = 0,tetGrid.w-1 do
         for j = 0,tetGrid.h-1 do 
             local mode
@@ -127,12 +133,11 @@ end
 function copyToBoard()
     for i = 0,3 do
         for j = 0,3 do 
-            if (currentPiece.grid[currentPiece.rotIndex][j+1][i+1] == 1) then
+            if (currentPiece.grid[currentPiece.rotIndex][j+1][i+1] == 1 ) then
                 tetGrid.board[j+1+currentPiece.y][i+1+currentPiece.x] = 1
             end
         end
     end
-    currentPiece:new(ppm,blockSize)
 end
 
 function removeLine(lineToDelete)
@@ -155,11 +160,22 @@ function checkLine()
         if(curLine == 10) then
             completedLine = completedLine + 1
             table.insert(lineToDelete, j)
-
         end
     end
     
     return completedLine, lineToDelete;
+end
+
+function addPoints(completedLine)
+    score=score+completedLine
+    if (score <= 0) then
+        earnedLevel = 1;
+    elseif ((score >= 1) and (score <= 90)) then
+        earnedLevel = 1 + ((score - 1) / 10);
+    elseif (score >= 91) then
+        earnedLevel = 10;
+    end
+    
 end
 
 function reset()
