@@ -180,21 +180,28 @@ local function getRandomPiece()
     end
 end
 
-local piece = {};
+local piece = {}
+local tetSprite,tetSpriteSize
+
+function piece.loadSprite(sprite)
+    tetSprite = love.graphics.newImage(sprite)
+    tetSpriteSize = tetSprite:getWidth()
+    print(tetSpriteSize)
+end
 
 function piece.new(this, blocksize, ppm)
-    this.rotIndex=1;
-    this.grid = getRandomPiece();
-    this.x = 0;
-    this.y = 0;
-    this.s = blocksize * ppm;
+    this.rotIndex=1
+    this.grid = getRandomPiece()
+    this.x = 0
+    this.y = 0
+    this.s = blocksize * ppm
 end
 
 function piece.rot(this,clockwise,board)
-    local tempIndex = clockwise and this.rotIndex + 1 or this.rotIndex - 1;
+    local tempIndex = clockwise and this.rotIndex + 1 or this.rotIndex - 1
 
     if(tempIndex > table.getn(this.grid)) then
-        tempIndex = 1;
+        tempIndex = 1
     elseif (tempIndex < 1) then
         tempIndex = table.getn(this.grid)
     end
@@ -203,66 +210,72 @@ function piece.rot(this,clockwise,board)
         return
     end
 
-    this.rotIndex = tempIndex;
+    this.rotIndex = tempIndex
 end
 
 function piece.trans(this,left,board)
-    local tempX = left and this.x -1 or this.x + 1;
+    local tempX = left and this.x -1 or this.x + 1
     --colision
     if (this:isCollide(board, tempX, this.rotIndex)) then
         return
     end
-    this.x= tempX;
+    this.x= tempX
 end
 
 function piece.fall(this,board)
-    local tempY = this.y + 1;
+    local tempY = this.y + 1
 
     if(this:isOnContact(board, tempY))then
-        return
+
+        return false
     end
-    this.y = tempY;
+    this.y = tempY
+    return true
 end
 
 function piece.isCollide(this,board,tempX,rotIndex)
     for i = 0,3 do
         for j = 0,3 do 
             if (this.grid[rotIndex][j+1][i+1] == 1) then
-                if(board[j+1+this.y][i+1+tempX] == 1 or board[j+1+this.y][i+1+tempX] == nil) then
+                if(j+1+this.y > table.getn(board) or board[j+1+this.y][i+1+tempX] == 1 or board[j+1+this.y][i+1+tempX] == nil) then
                     return true
                 end
                 --print(board[j+1+this.y][i+1+tempX])
             end
         end
     end
-    return false;
+    return false
 end
 
 function piece.isOnContact(this,board,tempY)
     for i = 0,3 do
         for j = 0,3 do 
             if (this.grid[this.rotIndex][j+1][i+1] == 1) then
-                if (j+1+tempY > table.getn(board))then
-                    return true
-                end
-                if(board[j+1+tempY][i+1+this.x] == 1 ) then
+                if (j+1+tempY > table.getn(board) or board[j+1+tempY][i+1+this.x] == 1)then
                     return true
                 end
             end
         end
     end
-    return false;
+    return false
 end
 
 function piece.draw(this)
     for i = 0,3 do
         for j = 0,3 do 
             if (this.grid[this.rotIndex][j+1][i+1] == 1) then
-                love.graphics.rectangle('fill',
+                -- love.graphics.rectangle('fill',
+                --     (this.x*this.s) + (i * this.s),
+                --     (this.y*this.s) + (j * this.s),
+                --     this.s,
+                --     this.s
+                -- )
+                love.graphics.draw(tetSprite,
                     (this.x*this.s) + (i * this.s),
                     (this.y*this.s) + (j * this.s),
-                    this.s,
-                    this.s
+                    0,
+                    this.s/tetSpriteSize,
+                    this.s/tetSpriteSize                
                 )
             end
         end
