@@ -4,9 +4,9 @@ local pieces = require'pieces'
 local currentPiece = pieces-- = {x=0y=0s=blockSize * ppm}
 local shader;
 local score=0;
-local earnedLevel=11;
-local countDown = 0.55;
-local debugTime = 0.55;
+local earnedLevel=0;
+local countDown = (0.05*(11-earnedLevel));
+local debugTime = (0.05*(11-earnedLevel));
 
 function love.load()
     love.graphics.setDefaultFilter('nearest');
@@ -52,16 +52,16 @@ function love.load()
     currentPiece:new(ppm,blockSize)
 end
 
-function love.update(dt)    
+function love.update (dt)    
     local now= love.timer.getTime()
     countDown = countDown-dt;
-    if(countDown<=0) then
+    if (countDown <= 0) then
         local fallRes = currentPiece:fall(tetGrid.board)
-        if(fallRes == false) then
+        if (fallRes == false) then
             copyToBoard()
             currentPiece:new(ppm,blockSize)
             local completedLine,lineToDelete = checkLine()
-            if(completedLine>0) then
+            if (completedLine > 0) then
                 removeLine(lineToDelete);
                 addPoints(completedLine);
             end
@@ -124,6 +124,16 @@ function love.keypressed(key)
     end
     if(key=='space') then
         reset()
+    end
+    if(key=='down') then
+        currentPiece:drop(tetGrid.board)
+        copyToBoard()
+        currentPiece:new(ppm,blockSize)
+        local completedLine,lineToDelete = checkLine()
+        if (completedLine > 0) then
+            removeLine(lineToDelete);
+            addPoints(completedLine);
+        end
     end
     if(key=='escape') then
         love.event.quit()

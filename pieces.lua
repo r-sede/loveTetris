@@ -227,6 +227,14 @@ function piece.fall(this,board)
     return true
 end
 
+function piece.drop(this,board)
+
+    while not (this:isOnContact(board, this.y))do
+        this.y = this.y + 1
+    end
+    this.y = this.y -1;
+end
+
 function piece.isCollide(this,board,tempX,rotIndex)
     if(this.y <= -1) then return false end
     for i = 0,3 do
