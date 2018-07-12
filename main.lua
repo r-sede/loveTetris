@@ -12,11 +12,16 @@ local debugTime = (0.05*(11-earnedLevel));
 local freeFallIteration = 0;
 local gameOver = false;
 local pause = false;
+local displayGrid = false;
+local pauseStr,gameStr;
+local sideText,gridSprite;
 
 function love.load()
     
     love.graphics.setDefaultFilter('nearest');
     currentPiece.loadSprite('assets/img/tetrisBlock.png')
+    sideText = love.graphics.newImage ('assets/img/side.png');
+    gridSprite = love.graphics.newImage('assets/img/tetrisBlock.png');
     blockMove = love.audio.newSource("assets/sfx/tetris_blockmove.ogg", "static")
     blockRotate = love.audio.newSource("assets/sfx/tetris_blockrotate.ogg", "static")
     blockDrop = love.audio.newSource("assets/sfx/tetris_blockdrop.ogg", "static")
@@ -61,9 +66,9 @@ function love.load()
     -- }
 
     WW = tetGrid.w * blockSize * ppm
-    WH = (tetGrid.h ) * blockSize * ppm
+    WH = (tetGrid.h-2 ) * blockSize * ppm
     
-    love.window.setMode(WW+300, WH)
+    love.window.setMode(WW+224, WH)
     currentPiece:new(ppm,blockSize)
     backMusic:play()
 
@@ -91,16 +96,18 @@ end
 
 function love.draw()
     drawGrid()
+    love.graphics.draw(sideText,WW,0,0,ppm,ppm)
     currentPiece:draw()
+
     love.graphics.print('score :'..score, 400, 10)
     love.graphics.print('line :'..lineCompl, 400, 25)
     love.graphics.print('earnedLevel :'..earnedLevel, 400, 40)
     love.graphics.print('realLevel :'..realLevel, 400, 55)
     love.graphics.print('countDown :'..debugTime, 400, 70)
     love.graphics.print('freeFallIteration :'..freeFallIteration, 400, 70+15)
-    local pauseStr = pause and 'pause' or 'play';
+    pauseStr = pause and 'pause' or 'play';
     love.graphics.print('pause ? :'..pauseStr, 400, 70+15+15)
-    local gameStr = gameOver and 'gameOver' or 'alive';
+    gameStr = gameOver and 'gameOver' or 'alive';
     love.graphics.print('gameOver ? :'..gameStr, 400, 70+15+15+15)
     
 end
@@ -110,16 +117,21 @@ function drawGrid()
         for j = 0,tetGrid.h-1 do 
             local mode
             if (tetGrid.board[j+1][i+1] == 1) then
-                mode = 'fill'
-            else
-                mode='line'
+                love.graphics.draw(gridSprite,
+                    (i*ppm * blockSize),
+                    ((j-2)*ppm * blockSize),
+                    0,
+                    ppm,
+                    ppm
+                )
+            elseif (displayGrid) then
+                love.graphics.rectangle('line',
+                    (i*ppm * blockSize),
+                    ((j-2)*ppm * blockSize),
+                    ppm * blockSize,
+                    ppm * blockSize
+                )
             end
-            love.graphics.rectangle(mode,
-                (i*ppm * blockSize),
-                (j*ppm * blockSize),
-                ppm * blockSize,
-                ppm * blockSize
-            )
         end
     end
 end
@@ -140,6 +152,16 @@ function love.keypressed(key)
     if(key=='right') then
         currentPiece:trans(false,tetGrid.board)
     end
+    if(key=='g') then
+        print('grid')
+        if (displayGrid == false) then 
+            displayGrid = true 
+        else 
+            backMusic:play()
+            displayGrid = false
+            
+        end
+    end  
     if(key=='space') then
         --reset()
         print('pause')
@@ -149,7 +171,6 @@ function love.keypressed(key)
         else 
             backMusic:play()
             pause = false
-            
         end
     end
     if(key=='down') then
@@ -183,8 +204,12 @@ function copyToBoard()
             end
         end
     end
+    checkGameOver()
+end
+
+function checkGameOver()
     for ii=1,10 do
-        if tetGrid.board[1][ii] == 1 then
+        if tetGrid.board[3][ii] == 1 then
             gameOver = true;
             backMusic:stop()
             goverMusic:play()
