@@ -274,16 +274,10 @@ function piece.isOnContact(this,board,tempY)
     end
     return false
 end
-function piece.draw(this)
+function piece.draw(this, debug)
     for i = 0,3 do
         for j = 0,3 do 
             if (this.grid[this.rotIndex][j+1][i+1] == 1) then
-                -- love.graphics.rectangle('fill',
-                --     (this.x*this.s) + (i * this.s),
-                --     (this.y*this.s) + (j * this.s),
-                --     this.s,
-                --     this.s
-                -- )
                 love.graphics.draw(tetSprite,
                     (this.x*this.s) + (i * this.s),
                     ((this.y-2)*this.s) + (j * this.s),
@@ -299,15 +293,9 @@ function piece.draw(this)
     for ii = 0,3 do
         for jj = 0,3 do 
             if (this.nextGrid[1][jj+1][ii+1] == 1) then
-                -- love.graphics.rectangle('fill',
-                --     (this.x*this.s) + (i * this.s),
-                --     (this.y*this.s) + (j * this.s),
-                --     this.s,
-                --     this.s
-                -- )
                 love.graphics.draw(tetSprite,
-                    400 + (ii * this.s),
-                    400 + (jj * this.s),
+                    368 + (ii * this.s),
+                    416 + (jj * this.s),
                     0,
                     this.s/tetSpriteSize,
                     this.s/tetSpriteSize                
@@ -315,9 +303,11 @@ function piece.draw(this)
             end
         end
     end
-    love.graphics.print('x: '..this.x..' ; y: '..this.y .. ' ; rot: '..this.rotIndex,
-        10,10
-    )
+    if(debug) then
+        love.graphics.print('x: '..this.x..' ; y: '..this.y .. ' ; rot: '..this.rotIndex,
+            10,10
+        )
+    end
 end
 
 return piece

@@ -15,13 +15,17 @@ local pause = false;
 local displayGrid = false;
 local pauseStr,gameStr;
 local sideText,gridSprite;
+local mute = false;
+local numberFont;
+local debug = false;
 
 function love.load()
-    
     love.graphics.setDefaultFilter('nearest');
     currentPiece.loadSprite('assets/img/tetrisBlock.png')
     sideText = love.graphics.newImage ('assets/img/side.png');
     gridSprite = love.graphics.newImage('assets/img/tetrisBlock.png');
+    numberFont = love.graphics.newImageFont("assets/img/tetris_numbers.png","0123456789><")
+
     blockMove = love.audio.newSource("assets/sfx/tetris_blockmove.ogg", "static")
     blockRotate = love.audio.newSource("assets/sfx/tetris_blockrotate.ogg", "static")
     blockDrop = love.audio.newSource("assets/sfx/tetris_blockdrop.ogg", "static")
@@ -30,6 +34,7 @@ function love.load()
     fourLineClear = love.audio.newSource("assets/sfx/tetris_4lines.ogg", "static")
     backMusic = love.audio.newSource("assets/sfx/tetris_music.ogg","stream")
     goverMusic = love.audio.newSource("assets/sfx/tetris_gameover.ogg","stream")
+
     backMusic:setLooping(true);
     blockSize = 8
     ppm = 4
@@ -97,18 +102,23 @@ end
 function love.draw()
     drawGrid()
     love.graphics.draw(sideText,WW,0,0,ppm,ppm)
-    currentPiece:draw()
+    currentPiece:draw(debug)
 
-    love.graphics.print('score :'..score, 400, 10)
-    love.graphics.print('line :'..lineCompl, 400, 25)
-    love.graphics.print('earnedLevel :'..earnedLevel, 400, 40)
-    love.graphics.print('realLevel :'..realLevel, 400, 55)
-    love.graphics.print('countDown :'..debugTime, 400, 70)
-    love.graphics.print('freeFallIteration :'..freeFallIteration, 400, 70+15)
-    pauseStr = pause and 'pause' or 'play';
-    love.graphics.print('pause ? :'..pauseStr, 400, 70+15+15)
-    gameStr = gameOver and 'gameOver' or 'alive';
-    love.graphics.print('gameOver ? :'..gameStr, 400, 70+15+15+15)
+    if(debug) then
+        love.graphics.print('earnedLevel :'..earnedLevel, 10, 25)
+        love.graphics.print('countDown :'..debugTime, 10, 25+15)
+        love.graphics.print('freeFallIteration :'..freeFallIteration, 10, 25+15+15)
+        pauseStr = pause and 'pause' or 'play';
+        love.graphics.print('pause ? :'..pauseStr, 10, 25+15+15+15)
+        gameStr = gameOver and 'gameOver' or 'alive';
+        love.graphics.print('gameOver ? :'..gameStr, 10, 25+15+15+15+15)
+    end
+
+    love.graphics.setFont(numberFont,32)
+    love.graphics.print(score, 368, 96)
+    love.graphics.print(realLevel, 416, 96+96+32)
+    love.graphics.print(lineCompl, 416, 96+96+32+96)
+    love.graphics.setNewFont(14)
     
 end
 
@@ -140,16 +150,16 @@ end
 
 
 function love.keypressed(key)
-    if(key=='x') then
+    if(key=='x' and not pause) then
         currentPiece:rot(true,tetGrid.board)
     end
-    if(key=='s') then
+    if(key=='s' and not pause) then
         currentPiece:rot(false,tetGrid.board)
     end
-    if(key=='left') then
+    if(key=='left' and not pause) then
         currentPiece:trans(true,tetGrid.board)
     end
-    if(key=='right') then
+    if(key=='right' and not pause) then
         currentPiece:trans(false,tetGrid.board)
     end
     if(key=='g') then
@@ -160,6 +170,14 @@ function love.keypressed(key)
             backMusic:play()
             displayGrid = false
             
+        end
+    end 
+    if(key=='d') then
+        print('debug')
+        if (debug == false) then 
+            debug = true 
+        else 
+            debug = false
         end
     end  
     if(key=='space') then
@@ -173,7 +191,18 @@ function love.keypressed(key)
             pause = false
         end
     end
-    if(key=='down') then
+    if(key=='m') then
+        --reset()
+        print('mute')
+        if (mute == false) then 
+            mute = true 
+            backMusic:pause()
+        else 
+            backMusic:play()
+            mute = false
+        end
+    end
+    if(key=='down' and not pause) then
         currentPiece:drop(tetGrid.board)
         blockDrop:play()
         copyToBoard()
