@@ -13,17 +13,26 @@ local freeFallIteration = 0;
 local gameOver = false;
 local pause = false;
 local displayGrid = false;
-local pauseStr,gameStr;
-local sideText,gridSprite;
 local mute = false;
-local numberFont;
 local debug = false;
 
+local pauseStr,gameStr;
+
+local numberFont;
+local sideText;
+tetrisSpriteSheet = {}
+
 function love.load()
+    love.keyboard.setKeyRepeat(true)
+    love.window.setTitle('LoveTetris')
     love.graphics.setDefaultFilter('nearest');
-    currentPiece.loadSprite('assets/img/tetrisBlock.png')
+    currentPiece.loadSprite('assets/img/1.png')
     sideText = love.graphics.newImage ('assets/img/side.png');
-    gridSprite = love.graphics.newImage('assets/img/tetrisBlock.png');
+
+    for i = 1,12 do
+       tetrisSpriteSheet[i] = love.graphics.newImage('assets/img/'..i..'.png') 
+    end
+
     numberFont = love.graphics.newImageFont("assets/img/tetris_numbers.png","0123456789><")
 
     blockMove = love.audio.newSource("assets/sfx/tetris_blockmove.ogg", "static")
@@ -126,8 +135,8 @@ function drawGrid()
     for i = 0,tetGrid.w-1 do
         for j = 0,tetGrid.h-1 do 
             local mode
-            if (tetGrid.board[j+1][i+1] == 1) then
-                love.graphics.draw(gridSprite,
+            if (tetGrid.board[j+1][i+1] > 0) then
+                love.graphics.draw(tetrisSpriteSheet[tetGrid.board[j+1][i+1]],
                     (i*ppm * blockSize),
                     ((j-2)*ppm * blockSize),
                     0,
@@ -163,17 +172,15 @@ function love.keypressed(key)
         currentPiece:trans(false,tetGrid.board)
     end
     if(key=='g') then
-        print('grid')
+        --print('grid')
         if (displayGrid == false) then 
             displayGrid = true 
         else 
-            backMusic:play()
             displayGrid = false
-            
         end
     end 
     if(key=='d') then
-        print('debug')
+        --print('debug')
         if (debug == false) then 
             debug = true 
         else 
@@ -182,18 +189,22 @@ function love.keypressed(key)
     end  
     if(key=='space') then
         --reset()
-        print('pause')
+        --print('pause')
         if (pause == false) then 
-            pause = true 
-            backMusic:pause()
-        else 
-            backMusic:play()
+            pause = true
+            if not (mute) then 
+                backMusic:pause()
+            end
+        else
+            if not(mute) then 
+                backMusic:play()
+            end
             pause = false
         end
     end
     if(key=='m') then
         --reset()
-        print('mute')
+        --print('mute')
         if (mute == false) then 
             mute = true 
             backMusic:pause()
@@ -228,8 +239,8 @@ end
 function copyToBoard()
     for i = 0,3 do
         for j = 0,3 do 
-            if (currentPiece.grid[currentPiece.rotIndex][j+1][i+1] == 1 ) then
-                tetGrid.board[j+1+currentPiece.y][i+1+currentPiece.x] = 1
+            if (currentPiece.grid[currentPiece.rotIndex][j+1][i+1] > 0 ) then
+                tetGrid.board[j+1+currentPiece.y][i+1+currentPiece.x] = currentPiece.grid[currentPiece.rotIndex][j+1][i+1]
             end
         end
     end
@@ -238,7 +249,7 @@ end
 
 function checkGameOver()
     for ii=1,10 do
-        if tetGrid.board[3][ii] == 1 then
+        if tetGrid.board[3][ii] > 0 then
             gameOver = true;
             backMusic:stop()
             goverMusic:play()
@@ -248,7 +259,7 @@ function checkGameOver()
 end
 
 function removeLine(lineToDelete)
-    print('removeLine')
+    --print('removeLine')
     for i=1,#lineToDelete do
         local line = lineToDelete[i]
         table.remove(tetGrid.board, line)
@@ -261,8 +272,10 @@ function checkLine()
     local lineToDelete = {}
     for j = 1,tetGrid.h do
         local curLine = 0 
-        for i = 1,tetGrid.w do 
-            curLine = curLine + tetGrid.board[j][i]
+        for i = 1,tetGrid.w do
+            if tetGrid.board[j][i] > 0 then
+                curLine = curLine + 1
+            end
         end
         if(curLine == 10) then
             completedLine = completedLine + 1

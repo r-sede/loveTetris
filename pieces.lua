@@ -2,8 +2,8 @@ local function o()
     local grids = {
         {
             {0,0,0,0},
-            {0,1,1,0},
-            {0,1,1,0},
+            {0,6,6,0},
+            {0,6,6,0},
             {0,0,0,0},
         }
     }
@@ -14,14 +14,14 @@ local function i()
 
     local grids = {
         {
-            {0,0,1,0},
-            {0,0,1,0},
-            {0,0,1,0},
-            {0,0,1,0},
+            {0,0,7,0},
+            {0,0,8,0},
+            {0,0,8,0},
+            {0,0,9,0},
         },
         {
             {0,0,0,0},
-            {1,1,1,1},
+            {10,11,11,12},
             {0,0,0,0},
             {0,0,0,0},
         }
@@ -33,14 +33,14 @@ local function s()
     local grids = {
         {
             {0,0,0,0},
-            {0,0,1,1},
-            {0,1,1,0},
+            {0,0,2,2},
+            {0,2,2,0},
             {0,0,0,0},
         },
         {
-            {0,0,1,0},
-            {0,0,1,1},
-            {0,0,0,1},
+            {0,0,2,0},
+            {0,0,2,2},
+            {0,0,0,2},
             {0,0,0,0},
         }
     }
@@ -51,14 +51,14 @@ local function z()
     local grids = {
         {
             {0,0,0,0},
-            {0,1,1,0},
-            {0,0,1,1},
+            {0,3,3,0},
+            {0,0,3,3},
             {0,0,0,0},
         },
         {
-            {0,0,0,1},
-            {0,0,1,1},
-            {0,0,1,0},
+            {0,0,0,3},
+            {0,0,3,3},
+            {0,0,3,0},
             {0,0,0,0},
         }
     }
@@ -69,26 +69,26 @@ local function l()
     local grids = {
         {
             {0,0,0,0},
-            {0,1,1,1},
-            {0,1,0,0},
+            {0,4,4,4},
+            {0,4,0,0},
             {0,0,0,0},
         },
         {
-            {0,0,1,0},
-            {0,0,1,0},
-            {0,0,1,1},
+            {0,0,4,0},
+            {0,0,4,0},
+            {0,0,4,4},
             {0,0,0,0},
         },
         {
-            {0,0,0,1},
-            {0,1,1,1},
+            {0,0,0,4},
+            {0,4,4,4},
             {0,0,0,0},
             {0,0,0,0},
         },
         {
-            {0,1,1,0},
-            {0,0,1,0},
-            {0,0,1,0},
+            {0,4,4,0},
+            {0,0,4,0},
+            {0,0,4,0},
             {0,0,0,0},
         }
     }
@@ -99,26 +99,26 @@ local function j()
     local grids = {
         {
             {0,0,0,0},
-            {0,1,1,1},
-            {0,0,0,1},
+            {0,5,5,5},
+            {0,0,0,5},
             {0,0,0,0},
         },
         {
-            {0,0,1,1},
-            {0,0,1,0},
-            {0,0,1,0},
+            {0,0,5,5},
+            {0,0,5,0},
+            {0,0,5,0},
             {0,0,0,0},
         },
         {
-            {0,1,0,0},
-            {0,1,1,1},
+            {0,5,0,0},
+            {0,5,5,5},
             {0,0,0,0},
             {0,0,0,0},
         },
         {
-            {0,0,1,0},
-            {0,0,1,0},
-            {0,1,1,0},
+            {0,0,5,0},
+            {0,0,5,0},
+            {0,5,5,0},
             {0,0,0,0},
         }
     }
@@ -157,7 +157,7 @@ end
 
 
 local piece = {}
-local tetSprite,tetSpriteSize
+local tetSpriteSize
 
 local randPieceIndex = {love.math.random( 7 ),love.math.random( 7 )}
 
@@ -180,14 +180,14 @@ local function getGridNumber(n)
 end
 
 local function getRandomPiece()
-    print('[1]:'..randPieceIndex[1]..' ; [2]:'..randPieceIndex[2])
+    --print('[1]:'..randPieceIndex[1]..' ; [2]:'..randPieceIndex[2])
     local n = table.remove(randPieceIndex,1);
     table.insert( randPieceIndex,  love.math.random( 7 ) )
     return getGridNumber(n);
 end
 
 function piece.loadSprite(sprite)
-    tetSprite = love.graphics.newImage(sprite)
+    local tetSprite = love.graphics.newImage(sprite)
     tetSpriteSize = tetSprite:getWidth()
     --print(tetSpriteSize)
 end
@@ -250,8 +250,8 @@ function piece.isCollide(this,board,tempX,rotIndex)
     if(this.y <= -1) then return false end
     for i = 0,3 do
         for j = 0,3 do 
-            if (this.grid[rotIndex][j+1][i+1] == 1) then
-                if(j+1+this.y > table.getn(board) or  board[j+1+this.y][i+1+tempX] == 1 or board[j+1+this.y][i+1+tempX] == nil) then
+            if (this.grid[rotIndex][j+1][i+1] > 0) then
+                if(j+1+this.y > table.getn(board) or  board[j+1+this.y][i+1+tempX] == nil or board[j+1+this.y][i+1+tempX] > 0 ) then
                     return true
                 end
                 --print(board[j+1+this.y][i+1+tempX])
@@ -265,8 +265,8 @@ function piece.isOnContact(this,board,tempY)
     if(this.y <= -1) then return false end
     for i = 0,3 do
         for j = 0,3 do 
-            if (this.grid[this.rotIndex][j+1][i+1] == 1) then
-                if (j+1+tempY > table.getn(board) or board[j+1+tempY][i+1+this.x] == 1)then
+            if (this.grid[this.rotIndex][j+1][i+1] > 0) then
+                if (j+1+tempY > table.getn(board) or board[j+1+tempY][i+1+this.x] > 0)then
                     return true
                 end
             end
@@ -277,8 +277,8 @@ end
 function piece.draw(this, debug)
     for i = 0,3 do
         for j = 0,3 do 
-            if (this.grid[this.rotIndex][j+1][i+1] == 1) then
-                love.graphics.draw(tetSprite,
+            if (this.grid[this.rotIndex][j+1][i+1] > 0) then
+                love.graphics.draw(tetrisSpriteSheet[this.grid[this.rotIndex][j+1][i+1]],
                     (this.x*this.s) + (i * this.s),
                     ((this.y-2)*this.s) + (j * this.s),
                     0,
@@ -292,8 +292,8 @@ function piece.draw(this, debug)
 
     for ii = 0,3 do
         for jj = 0,3 do 
-            if (this.nextGrid[1][jj+1][ii+1] == 1) then
-                love.graphics.draw(tetSprite,
+            if (this.nextGrid[1][jj+1][ii+1] > 0) then
+                love.graphics.draw(tetrisSpriteSheet[this.nextGrid[1][jj+1][ii+1]],
                     368 + (ii * this.s),
                     416 + (jj * this.s),
                     0,
