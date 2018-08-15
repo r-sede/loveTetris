@@ -1,4 +1,4 @@
-# PACMAN love2d remake
+# TETRIS love2d remake
 
 A tetris remake based on the GB version (1989)
 made with [love2d](https://love2d.org/) <small>_(with love)_</small> in pure spaghetti style
