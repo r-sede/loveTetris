@@ -10,9 +10,9 @@ source: [Tetris dossier](https://www.colinfahey.com/tetris/tetris.html)
 ### TODO:
 
 - [ ] add high score file
-- [ ] add states (gameOver etc...)
-- [ ] add menu to title screen (play/scores)
-- [ ] Build a win32 .exe
+- [x] add states (gameOver etc...)
+- [x] add menu to title screen (play/scores)
+- [x] Build a win32 .exe
 
 
 ---
@@ -40,7 +40,9 @@ source: [Tetris dossier](https://www.colinfahey.com/tetris/tetris.html)
 
 ## windows:
 
+unzip build/loveTetris.zip
 
+run loveTetris.exe
 
 ## linux:
 
