@@ -13,6 +13,10 @@ source: [Tetris dossier](https://www.colinfahey.com/tetris/tetris.html)
 - [x] add states (gameOver etc...)
 - [x] add menu to title screen (play/scores)
 - [x] Build a win32 .exe
+- [x] Build a win64 .exe
+- [x] Build a macOS .app
+- [x] Build a linux x86_64 .AppImage
+- [x] Build a lovefile
 
 
 ---
@@ -40,9 +44,9 @@ source: [Tetris dossier](https://www.colinfahey.com/tetris/tetris.html)
 
 ## windows:
 
-unzip build/loveTetris.zip
+download the release tetris_win32/64.zip and unzip
 
-run loveTetris.exe
+run tetris.exe
 
 ## linux:
 
@@ -50,13 +54,18 @@ install love2d package for your distrib
 
 _ex deb package:_
 
-```
-$ sudo add-apt-repository ppa:bartbes/love-stable
-$ sudo apt-get update
+```shell
+sudo add-apt-repository ppa:bartbes/love-stable
+sudo apt-get update
 ```
 
+```shell
+git clone https://github.com/r-sede/loveTetris.git
+cd loveTetris
+love .
 ```
-$ git clone https://github.com/r-sede/loveTetris.git
-$ cd loveTetris
-$ love .
-```
+
+## macOS:
+
+download the release tetris_macos.zip and unzip and click 2x to open
+system settings > privace & security > tetris (open anyway)
