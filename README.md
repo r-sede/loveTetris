@@ -1,71 +1,78 @@
-# TETRIS love2d remake
+# TETRIS Love2D Remake
 
-A tetris remake based on the GB version (1989)
-made with [love2d](https://love2d.org/) <small>_(with love)_</small> in pure spaghetti style
+A classic Tetris remake inspired by the original Game Boy version (1989), built with [Love2D](https://love2d.org/) in pure spaghetti code style.
 
-source: [Tetris dossier](https://www.colinfahey.com/tetris/tetris.html)
+Source: [Tetris Dossier](https://www.colinfahey.com/tetris/tetris.html)
 
-![Tetris remake screenshot](https://github.com/r-sede/loveTetris/raw/master/assets/img/tetrisScreen.jpg ':v')
-
-### TODO:
-
-- [ ] add high score file
-- [x] add states (gameOver etc...)
-- [x] add menu to title screen (play/scores)
-- [x] Build a win32 .exe
-- [x] Build a win64 .exe
-- [x] Build a macOS .app
-- [x] Build a linux x86_64 .AppImage
-- [x] Build a lovefile
-
+![Tetris Remake Screenshot](https://github.com/r-sede/loveTetris/raw/master/assets/img/tetrisScreen.jpg ':v')
 
 ---
 
-## control:
+## Features
 
-**arrow key:** move piece ( spam the key )
-
-**esc:** quit game
-
-**d:** toggle debug info
-
-**g:** toggle grid
-
-**m:** mute
-
-**space:** pause
-
-**x:** rotate piece clockWise
-
-**s:** rotate piece antiClockWise
-
+- Authentic Game Boy-style Tetris gameplay
+- States (e.g., Game Over, etc.)
+- Title screen with menu (Play, High Scores)
+- Platform-specific builds for Windows, macOS, and Linux
 
 ---
 
-## windows:
+## TODO
 
-download the release tetris_win32/64.zip and unzip
+- [ ] Add high score file
+- [x] Add game states (e.g., Game Over)
+- [x] Add menu on title screen (Play / High Scores)
+- [x] Build Windows (32-bit and 64-bit) executables
+- [x] Build macOS `.app`
+- [x] Build Linux `.AppImage`
+- [x] Build a Love2D `.love` file
 
-run tetris.exe
+---
 
-## linux:
+## Controls
 
-install love2d package for your distrib
+- **Arrow keys:** Move piece (hold or spam)
+- **Esc:** Quit game
+- **D:** Toggle debug info
+- **G:** Toggle grid visibility
+- **M:** Mute sound
+- **Space:** Pause game
+- **X:** Rotate piece clockwise
+- **S:** Rotate piece counterclockwise
 
-_ex deb package:_
+---
 
-```shell
-sudo add-apt-repository ppa:bartbes/love-stable
-sudo apt-get update
-```
+## Installation
 
-```shell
-git clone https://github.com/r-sede/loveTetris.git
-cd loveTetris
-love .
-```
+### Windows:
 
-## macOS:
+1. Download the `tetris_win32.zip` or `tetris_win64.zip` release from the [releases page](https://github.com/r-sede/loveTetris/releases).
+2. Extract the ZIP file and run `tetris.exe`.
 
-download the release tetris_macos.zip and unzip and click 2x to open
-system settings > privace & security > tetris (open anyway)
+### Linux:
+
+1. Install the `love2d` package for your distribution.
+
+   For **Debian-based distributions** (e.g., Ubuntu), you can install it via:
+
+   ```bash
+   sudo add-apt-repository ppa:bartbes/love-stable
+   sudo apt-get update
+   sudo apt-get install love
+
+2. Clone the repository and run it with Love2D:
+
+    git clone https://github.com/r-sede/loveTetris.git
+    cd loveTetris
+    love .
+
+### macOS:
+
+1. Download the tetris_macos.zip release from the releases page.
+2. Extract the ZIP file and double-click the .app to open.
+- If macOS blocks the app, go to System Preferences > Security & Privacy, then click "Open Anyway" next to the Tetris app.
+
+## Credits
+
+* Tetris was originally designed and programmed by Alexey Pajitnov.
+* Built with Love2D, a fantastic framework for 2D game development.
