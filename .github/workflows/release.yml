@@ -1,0 +1,32 @@
+name: Create Release for Love2D Project
+
+on:
+  workflow_dispatch:  # Manual trigger from the GitHub UI
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - uses: humbertodias/love-build@master
+      id: love-build
+      with:
+        app_name: 'tetris'
+        love_version: '11.5'
+
+    - name: Upload release assets
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          ${{ steps.love-build.outputs.macos-filename }}
+          ${{ steps.love-build.outputs.win32-filename }}
+          ${{ steps.love-build.outputs.win64-filename }}
+          ${{ steps.love-build.outputs.love-filename }}
+          ${{ steps.love-build.outputs.linux_x86_64-filename }}
